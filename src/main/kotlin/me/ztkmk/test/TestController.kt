@@ -14,7 +14,7 @@ class TestController {
 
     @GetMapping("/")
     fun index(model: Model) : String {
-        model.set("title", "Kebron")
+        model["title"] = "Kebron"
         return "index"
     }
 }
