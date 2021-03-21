@@ -1,6 +1,7 @@
 package me.ztkmk.auth.service
 
 import me.ztkmk.auth.enumeration.UserAuthenticationStatus
+import org.springframework.http.HttpStatus
 
 /**
  * @author Kebron ztkmkoo@gmail.com
@@ -10,5 +11,5 @@ import me.ztkmk.auth.enumeration.UserAuthenticationStatus
 interface AuthenticationService {
     fun getUserStatus(cellphone: String, deviceId: String): UserAuthenticationStatus
 
-    fun createUserCertificationNumber(cellphone: String, deviceId: String): Boolean
+    fun createUserCertificationNumber(cellphone: String, deviceId: String): HttpStatus
 }

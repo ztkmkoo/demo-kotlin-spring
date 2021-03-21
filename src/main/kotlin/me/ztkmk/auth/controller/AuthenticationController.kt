@@ -5,10 +5,8 @@ import me.ztkmk.auth.entity.PostUserCertificationNumberRequest
 import me.ztkmk.auth.service.AuthenticationService
 import me.ztkmk.common.api.ApiVersions
 import me.ztkmk.common.api.Version
-import me.ztkmk.common.api.entity.CommonApiErrorResponse
 import me.ztkmk.common.log.CustomLog
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -52,14 +50,8 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
     @PostMapping(value = ["/user/certification-number"])
     fun postUserCertificationNumber(@RequestBody(required = true) request: PostUserCertificationNumberRequest): ResponseEntity<Any> {
         val result = authenticationService.createUserCertificationNumber(request.cellphone, request.deviceId)
-        return if(result) {
-            ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build()
-        } else {
-            ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(CommonApiErrorResponse(message = COMMON_ERROR_MESSAGE))
-        }
+        return ResponseEntity
+            .status(result)
+            .build()
     }
 }
