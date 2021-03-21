@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.2.2.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
+    id ("org.jetbrains.kotlin.plugin.jpa") version "1.4.31"
     kotlin("jvm") version "1.4.31"
     kotlin("plugin.spring") version "1.4.31"
     kotlin("plugin.allopen") version "1.4.31"
@@ -17,18 +18,24 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("mysql:mysql-connector-java")
 
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(module = "mockito-core")
+    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks.test {
@@ -43,4 +50,8 @@ allOpen {
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
