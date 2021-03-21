@@ -16,7 +16,7 @@ data class User(
     @Column(name = "idno")
     val idNo: String,
     val cellphone: String,
-    val deviceId: String,
+    val uuid: String,
     val regYmdt: Date,
     val modYmdt: Date
 )

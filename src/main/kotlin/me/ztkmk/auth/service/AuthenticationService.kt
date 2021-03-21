@@ -9,4 +9,6 @@ import me.ztkmk.auth.enumeration.UserAuthenticationStatus
 
 interface AuthenticationService {
     fun getUserStatus(cellphone: String, deviceId: String): UserAuthenticationStatus
+
+    fun createUserCertificationNumber(cellphone: String, deviceId: String): Boolean
 }

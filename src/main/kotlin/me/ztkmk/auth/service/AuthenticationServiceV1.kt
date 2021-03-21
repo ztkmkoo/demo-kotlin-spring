@@ -20,7 +20,7 @@ class AuthenticationServiceV1(@Autowired val userRepository: UserRepository): Au
         val logSuffix = "[Cellphone: $cellphone][DeviceId: $deviceId]"
         logger.debug("Try to get user status. $logSuffix")
 
-        var user = userRepository.findByCellphoneAndDeviceId(cellphone, deviceId)
+        var user = userRepository.findByCellphoneAndUuid(cellphone, deviceId)
         logger.debug("Get user by cellphone and device id from database: $user. $logSuffix")
 
         if(Objects.nonNull(user)) {
@@ -35,5 +35,9 @@ class AuthenticationServiceV1(@Autowired val userRepository: UserRepository): Au
 
         logger.debug("There is no user match from database. $logSuffix")
         return UserAuthenticationStatus.NEW_USER
+    }
+
+    override fun createUserCertificationNumber(cellphone: String, deviceId: String): Boolean {
+        TODO("Not yet implemented")
     }
 }

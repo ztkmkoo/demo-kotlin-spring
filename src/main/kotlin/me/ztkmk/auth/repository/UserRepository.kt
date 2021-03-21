@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository
  */
 @Repository
 interface UserRepository: JpaRepository<User, Long> {
-    fun findByCellphoneAndDeviceId(cellphone: String, deviceId: String): User?
+    fun findByCellphoneAndUuid(cellphone: String, uuid: String): User?
     fun findByCellphone(cellphone: String): User?
 }

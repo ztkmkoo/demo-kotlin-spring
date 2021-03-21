@@ -35,7 +35,7 @@ class AuthenticationServiceV1Test {
         seq = 1,
         idNo = "user1",
         cellphone = registeredCellphone,
-        deviceId = deviceIdForRegisteredCellphone,
+        uuid = deviceIdForRegisteredCellphone,
         regYmdt = now,
         modYmdt = now
     )
@@ -44,10 +44,10 @@ class AuthenticationServiceV1Test {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
 
-        `when`(repository.findByCellphoneAndDeviceId(registeredCellphone, deviceIdForRegisteredCellphone))
+        `when`(repository.findByCellphoneAndUuid(registeredCellphone, deviceIdForRegisteredCellphone))
             .thenReturn(user)
 
-        `when`(repository.findByCellphoneAndDeviceId(registeredCellphone, unregisteredDeviceId))
+        `when`(repository.findByCellphoneAndUuid(registeredCellphone, unregisteredDeviceId))
             .thenReturn(null)
 
         `when`(repository.findByCellphone(registeredCellphone))
