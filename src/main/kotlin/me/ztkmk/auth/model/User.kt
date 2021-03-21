@@ -17,6 +17,6 @@ data class User(
     val idNo: String,
     val cellphone: String,
     val uuid: String,
-    val regYmdt: Date,
-    val modYmdt: Date
+    val created: Date,
+    val modified: Date
 )

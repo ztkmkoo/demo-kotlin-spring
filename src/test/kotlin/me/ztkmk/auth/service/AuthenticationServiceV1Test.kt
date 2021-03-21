@@ -36,8 +36,8 @@ class AuthenticationServiceV1Test {
         idNo = "user1",
         cellphone = registeredCellphone,
         uuid = deviceIdForRegisteredCellphone,
-        regYmdt = now,
-        modYmdt = now
+        created = now,
+        modified = now
     )
 
     @BeforeEach
