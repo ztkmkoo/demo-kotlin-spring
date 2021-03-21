@@ -2,6 +2,7 @@ package me.ztkmk.auth.controller
 
 import me.ztkmk.auth.entity.GetUserStatusResponse
 import me.ztkmk.auth.service.AuthenticationService
+import me.ztkmk.common.api.ApiVersions
 import me.ztkmk.common.api.Version
 import me.ztkmk.common.log.CustomLog
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +21,7 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
 
     companion object: CustomLog
 
-    @Version(value = [1.0])
+    @Version(value = [ApiVersions.V1_0])
     @GetMapping("user/status")
     fun getUserStatus(
         @RequestParam(value = "cellphone", required = true) cellphone: String,

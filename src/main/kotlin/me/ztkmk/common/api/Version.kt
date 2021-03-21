@@ -7,6 +7,6 @@ package me.ztkmk.common.api
 @Retention(AnnotationRetention.RUNTIME)
 @Target(allowedTargets = [AnnotationTarget.FUNCTION, AnnotationTarget.TYPE])
 annotation class Version(
-    val value: DoubleArray,
+    val value: Array<ApiVersions>,
     val prefix: String = "api/v"
 )

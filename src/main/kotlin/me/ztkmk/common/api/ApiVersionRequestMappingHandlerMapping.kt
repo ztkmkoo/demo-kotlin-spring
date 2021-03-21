@@ -46,9 +46,9 @@ class ApiVersionRequestMappingHandlerMapping: RequestMappingHandlerMapping() {
 
         for (i in values.indices) {
             if (StringUtils.isEmpty(prefix)) {
-                patterns[i] = PREFIX + values[i]
+                patterns[i] = PREFIX + values[i].version
             } else {
-                patterns[i] = prefix + values[i]
+                patterns[i] = prefix + values[i].version
             }
         }
 

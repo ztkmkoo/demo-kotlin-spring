@@ -1,7 +1,5 @@
 package me.ztkmk.test
 
-import me.ztkmk.common.api.Version
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
@@ -18,13 +16,5 @@ class TestController {
     fun index(model: Model) : String {
         model["title"] = "Kebron"
         return "index"
-    }
-
-    @Version(value = [1.0])
-    @GetMapping("test")
-    fun test() : ResponseEntity<Any> {
-        return ResponseEntity
-            .ok()
-            .build()
     }
 }
