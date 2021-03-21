@@ -22,7 +22,7 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
     companion object: CustomLog
 
     @Version(value = [ApiVersions.V1_0])
-    @GetMapping("user/status")
+    @GetMapping(value = ["user/status"])
     fun getUserStatus(
         @RequestParam(value = "cellphone", required = true) cellphone: String,
         @RequestParam(value = "device-id", required = true) deviceId: String
