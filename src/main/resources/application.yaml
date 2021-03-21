@@ -7,3 +7,12 @@ spring:
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: "test"
     password: "test123"
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comment: true
+        type:
+          descriptor:
+            sql: info
