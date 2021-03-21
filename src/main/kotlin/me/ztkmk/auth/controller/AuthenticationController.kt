@@ -24,7 +24,7 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
     @GetMapping("user/status")
     fun getUserStatus(
         @RequestParam(value = "cellphone", required = true) cellphone: String,
-        @RequestParam(value = "devices-id", required = true) deviceId: String
+        @RequestParam(value = "device-id", required = true) deviceId: String
     ): ResponseEntity<Any> {
         logger.debug("getUserStatus: [UserId: $cellphone][DeviceId: $deviceId]")
 
