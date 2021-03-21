@@ -2,6 +2,7 @@ package me.ztkmk.common.api
 
 import me.ztkmk.common.log.CustomLog
 import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.util.StringUtils
 import org.springframework.web.servlet.mvc.condition.*
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
@@ -15,7 +16,7 @@ import java.util.*
 class ApiVersionRequestMappingHandlerMapping: RequestMappingHandlerMapping() {
 
     companion object: CustomLog {
-        const val prefix = "api/v"
+        const val PREFIX = "api/v"
     }
 
     override fun getMappingForMethod(method: Method, handlerType: Class<*>): RequestMappingInfo? {
@@ -40,10 +41,15 @@ class ApiVersionRequestMappingHandlerMapping: RequestMappingHandlerMapping() {
 
     private fun createApiVersionInfo(annotation: Version, condition: RequestCondition<*>?): RequestMappingInfo {
         val values = annotation.value
+        val prefix = annotation.prefix
         val patterns = arrayOfNulls<String>(values.size)
 
         for (i in values.indices) {
-            patterns[i] = prefix + values[i]
+            if (StringUtils.isEmpty(prefix)) {
+                patterns[i] = PREFIX + values[i]
+            } else {
+                patterns[i] = prefix + values[i]
+            }
         }
 
         return RequestMappingInfo(
