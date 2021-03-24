@@ -12,4 +12,6 @@ import java.util.*
 @Repository
 interface UserAuthLogRepository: JpaRepository<UserAuthLog, Long> {
     fun findOneByCellphoneAndCreatedGreaterThan(cellphone: String, created: Date): UserAuthLog?
+
+    fun findFirstByCellphoneAndUuidOrderBySeqDesc(cellphone: String, uuid: String): UserAuthLog?
 }

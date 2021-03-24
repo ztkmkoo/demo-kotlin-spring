@@ -1,10 +1,14 @@
 package me.ztkmk.auth.controller
 
+import me.ztkmk.auth.entity.CreateUserTokenRequest
+import me.ztkmk.auth.entity.CreateUserTokenResponse
 import me.ztkmk.auth.entity.GetUserStatusResponse
 import me.ztkmk.auth.entity.PostUserCertificationNumberRequest
+import me.ztkmk.auth.enumeration.AuthVerificationStatus
 import me.ztkmk.auth.service.AuthenticationService
 import me.ztkmk.common.api.ApiVersions
 import me.ztkmk.common.api.Version
+import me.ztkmk.common.api.entity.CommonApiErrorResponse
 import me.ztkmk.common.log.CustomLog
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -22,9 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam
 @Controller(value = "/auth")
 class AuthenticationController(@Autowired val authenticationService: AuthenticationService) {
 
-    companion object: CustomLog {
-        const val COMMON_ERROR_MESSAGE = "Some problems wer encountered in server. Try it later."
-    }
+    companion object: CustomLog
 
     @Version(value = [ApiVersions.V1_0])
     @GetMapping(value = ["user/status"])
@@ -53,5 +55,22 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
         return ResponseEntity
             .status(result)
             .build()
+    }
+
+    @Version(value = [ApiVersions.V1_0])
+    @PostMapping(value = ["/user/token"])
+    fun createUserToken(@RequestBody(required = true) request: CreateUserTokenRequest): ResponseEntity<Any> {
+        val verify = authenticationService.verifyAuthNumber(request.cellphone, request.deviceId, request.authNumber)
+        if(AuthVerificationStatus.OK != verify) {
+            return ResponseEntity
+                .badRequest()
+                .body(CommonApiErrorResponse(message = "Create user token error: $verify"))
+        }
+
+        val token = authenticationService.createJwtToken(request.cellphone, request.deviceId)
+
+        return ResponseEntity
+            .ok()
+            .body(CreateUserTokenResponse(token = token))
     }
 }

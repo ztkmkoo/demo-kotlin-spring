@@ -1,9 +1,7 @@
 package me.ztkmk.auth.model
 
 import java.util.*
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
+import javax.persistence.*
 
 /**
  * @author Kebron ztkmkoo@gmail.com
@@ -12,7 +10,8 @@ import javax.persistence.Id
 @Entity(name = "users")
 data class User(
     @Id
-    val seq: Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val seq: Long?,
     @Column(name = "idno")
     val idNo: String,
     val cellphone: String,

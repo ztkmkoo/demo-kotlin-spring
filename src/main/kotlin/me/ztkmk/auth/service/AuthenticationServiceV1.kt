@@ -1,6 +1,11 @@
 package me.ztkmk.auth.service
 
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.impl.DefaultClaims
+import me.ztkmk.auth.enumeration.AuthVerificationStatus
 import me.ztkmk.auth.enumeration.UserAuthenticationStatus
+import me.ztkmk.auth.model.User
 import me.ztkmk.auth.model.UserAuthLog
 import me.ztkmk.auth.repository.UserAuthLogRepository
 import me.ztkmk.auth.repository.UserRepository
@@ -9,6 +14,8 @@ import me.ztkmk.common.util.RandomUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
+import java.security.InvalidParameterException
 import java.util.*
 
 /**
@@ -68,11 +75,73 @@ class AuthenticationServiceV1(
         return HttpStatus.CREATED
     }
 
+    override fun verifyAuthNumber(cellphone: String, deviceId: String, authNumber: String): AuthVerificationStatus {
+        if(StringUtils.isEmpty(cellphone) || StringUtils.isEmpty(deviceId) || StringUtils.isEmpty(authNumber)) {
+            throw InvalidParameterException();
+        }
+
+        val log = userAuthLogRepository.findFirstByCellphoneAndUuidOrderBySeqDesc(cellphone = cellphone, uuid = deviceId)
+        if(Objects.isNull(log)) {
+            throw InvalidParameterException();
+        }
+
+        val expired = verifyAuthNumberRequestExpired((log!!.created!!))
+        if(expired) {
+            return AuthVerificationStatus.EXPIRED
+        }
+
+        if (authNumber != log.number) {
+            return AuthVerificationStatus.INVALID_NUMBER
+        }
+
+        return AuthVerificationStatus.OK
+    }
+
+    override fun createJwtToken(cellphone: String, deviceId: String): String {
+        var user = userRepository.findByCellphone(cellphone)
+        val now = Date()
+
+        if(Objects.isNull(user)) {
+            val idno = UUID.fromString(cellphone)
+            user = User(
+                seq = null,
+                idNo = idno.toString(),
+                cellphone = cellphone,
+                uuid = deviceId,
+                created = now,
+                modified = now
+            )
+
+            userRepository.save(user)
+        }
+
+        val key = "HELLO WORLD"
+
+        val claims = DefaultClaims()
+        val oneHourInMillis = 60 * 60 * 1000
+        claims.expiration = Date(now.time + oneHourInMillis)
+        claims.issuedAt = now
+        claims["userSeq"] = user?.seq
+
+        return Jwts
+            .builder()
+            .setHeaderParam("typ", "JWT")
+            .setHeaderParam("alg", "HS256")
+            .setClaims(claims)
+            .signWith(SignatureAlgorithm.HS256, key.toByteArray(Charsets.UTF_8))
+            .compact()
+    }
+
     private fun getDatetimeBeforeFiveMinutes(): Date {
         val cal = Calendar.getInstance()
         cal.time = Date()
         cal.add(Calendar.MINUTE, -5)
 
         return cal.time
+    }
+
+    private fun verifyAuthNumberRequestExpired(reqRegYmdt: Date): Boolean {
+        val fiveMinBefore = getDatetimeBeforeFiveMinutes()
+        return fiveMinBefore.after(reqRegYmdt)
     }
 }
