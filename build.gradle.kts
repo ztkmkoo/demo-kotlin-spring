@@ -22,7 +22,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-web")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 //    implementation("org.springframework.security.oauth:spring-security-oauth2")
 //    implementation("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.2.2.RELEASE")
 //    implementation("org.springframework.security:spring-security-jwt")

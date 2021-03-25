@@ -63,6 +63,7 @@ class AuthenticationServiceV1(
         }
 
         val random = RandomUtils.randomNumericString()
+        logger.info("RANDOM: $random. $logSuffix")
         var userAuthLog = UserAuthLog(
             cellphone = cellphone,
             uuid = deviceId,

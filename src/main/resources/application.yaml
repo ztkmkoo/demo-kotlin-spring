@@ -15,4 +15,7 @@ spring:
         use_sql_comment: true
         type:
           descriptor:
-            sql: info
+            sql: DEBUG
+logging:
+  level:
+    root: INFO

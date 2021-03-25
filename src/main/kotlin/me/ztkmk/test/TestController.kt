@@ -1,5 +1,7 @@
 package me.ztkmk.test
 
+import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
@@ -16,5 +18,10 @@ class TestController {
     fun index(model: Model) : String {
         model["title"] = "Kebron"
         return "index"
+    }
+
+    @GetMapping(value = ["/hi"])
+    fun hi(principal: UsernamePasswordAuthenticationToken): ResponseEntity<Any> {
+        return ResponseEntity.ok("hi ${principal.principal}")
     }
 }
