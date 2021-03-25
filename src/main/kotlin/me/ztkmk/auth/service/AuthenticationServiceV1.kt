@@ -1,8 +1,6 @@
 package me.ztkmk.auth.service
 
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.impl.DefaultClaims
+import me.ztkmk.auth.component.JwtTokenComponent
 import me.ztkmk.auth.enumeration.AuthVerificationStatus
 import me.ztkmk.auth.enumeration.UserAuthenticationStatus
 import me.ztkmk.auth.model.User
@@ -25,7 +23,8 @@ import java.util.*
 @Service
 class AuthenticationServiceV1(
     @Autowired val userRepository: UserRepository,
-    @Autowired val userAuthLogRepository: UserAuthLogRepository
+    @Autowired val userAuthLogRepository: UserAuthLogRepository,
+    @Autowired val jwtTokenComponent: JwtTokenComponent
     ): AuthenticationService {
 
     companion object: CustomLog
@@ -116,21 +115,7 @@ class AuthenticationServiceV1(
             userRepository.save(user)
         }
 
-        val key = "HELLO WORLD"
-
-        val claims = DefaultClaims()
-        val oneHourInMillis = 60 * 60 * 1000
-        claims.expiration = Date(now.time + oneHourInMillis)
-        claims.issuedAt = now
-        claims["userSeq"] = user?.seq
-
-        return Jwts
-            .builder()
-            .setHeaderParam("typ", "JWT")
-            .setHeaderParam("alg", "HS256")
-            .setClaims(claims)
-            .signWith(SignatureAlgorithm.HS256, key.toByteArray(Charsets.UTF_8))
-            .compact()
+        return jwtTokenComponent.newToken(user!!.seq!!, now)
     }
 
     private fun getDatetimeBeforeFiveMinutes(): Date {
