@@ -102,7 +102,7 @@ class AuthenticationServiceV1(
         val now = Date()
 
         if(Objects.isNull(user)) {
-            val idno = UUID.fromString(cellphone)
+            val idno = UUID.randomUUID()
             user = User(
                 seq = null,
                 idNo = idno.toString(),

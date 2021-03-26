@@ -20,7 +20,7 @@ class WebSecurityConfig(
         http
             ?.csrf()?.disable()
             ?.authorizeRequests()
-            ?.antMatchers("/api/v1.0/user/**")?.permitAll()
+            ?.antMatchers("/api/v1.0/auth/**")?.permitAll()
             ?.antMatchers("/**")?.hasRole("USER")
             ?.anyRequest()?.authenticated()
             ?.and()
