@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.2.2.RELEASE"
+    id("org.springframework.boot") version "2.3.9.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     id ("org.jetbrains.kotlin.plugin.jpa") version "1.4.31"
     id("com.github.johnrengelman.shadow") version "5.2.0"

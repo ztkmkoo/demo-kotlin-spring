@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.impl.DefaultClaims
 import org.springframework.stereotype.Component
 import java.util.*
-import javax.validation.constraints.NotEmpty
 
 /**
  * @author Kebron ztkmkoo@gmail.com
@@ -18,7 +17,7 @@ class JwtTokenComponent {
     private final val keyBytes = key.toByteArray(Charsets.UTF_8)
     private final val oneHourInMillis = 60 * 60 * 1000
 
-    fun parse(@NotEmpty token: String): Claims {
+    fun parse(token: String): Claims {
         return Jwts
             .parser()
             .setSigningKey(keyBytes)
