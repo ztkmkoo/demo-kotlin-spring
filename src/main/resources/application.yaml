@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  profiles:
+    active: dev
   datasource:
     url: "jdbc:mysql://127.0.0.1:13306/test"
     driver-class-name: "com.mysql.cj.jdbc.Driver"
@@ -19,3 +21,14 @@ spring:
 logging:
   level:
     root: INFO
+
+---
+
+server:
+  port: 8181
+
+spring:
+  profiles: dev
+  datasource:
+    url: "jdbc:mysql://127.0.0.1:3306/test"
+
