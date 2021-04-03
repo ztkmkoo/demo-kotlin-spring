@@ -1,8 +1,7 @@
 package me.ztkmk.auth.component
 
+import me.ztkmk.auth.entity.DefaultAuthenticationToken
 import me.ztkmk.common.log.CustomLog
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
@@ -21,8 +20,6 @@ class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent): OncePerRequest
 
     companion object: CustomLog
 
-    val authorityList = defaultAuthorityList()
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -35,8 +32,8 @@ class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent): OncePerRequest
             val claims = jwtTokenComponent.parse(jwtToken)
 
             if(jwtTokenComponent.validToken(claims)) {
-                val seq = claims["userSeq"]
-                val authToken = UsernamePasswordAuthenticationToken(seq, null, authorityList)
+                val seq = getLongValue(claims["userSeq"])
+                val authToken = DefaultAuthenticationToken(seq)
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken
             } else{
@@ -47,9 +44,10 @@ class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent): OncePerRequest
         filterChain.doFilter(request, response)
     }
 
-    private fun defaultAuthorityList(): ArrayList<GrantedAuthority> {
-        val authList = ArrayList<GrantedAuthority>()
-        authList.add(GrantedAuthority(function = {"ROLE_USER"}))
-        return authList
+    private fun getLongValue(any: Any?): Long {
+        return when(any) {
+            is Number -> any.toLong()
+            else -> throw RuntimeException("not numeric!!!")
+        }
     }
 }
