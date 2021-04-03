@@ -42,6 +42,7 @@ class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent) : OncePerReques
                     SecurityContextHolder.getContext().authentication = authToken
 
                     filterChain.doFilter(request, response)
+                    return
                 } else {
                     throw RuntimeException("Invalid user token")
                 }

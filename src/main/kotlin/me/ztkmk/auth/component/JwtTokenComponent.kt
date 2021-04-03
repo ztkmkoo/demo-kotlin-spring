@@ -16,6 +16,7 @@ class JwtTokenComponent {
     private final val key = "HELLO WORLD"
     private final val keyBytes = key.toByteArray(Charsets.UTF_8)
     private final val oneHourInMillis = 60 * 60 * 1000
+    private final val validTokenMillis = 24 * oneHourInMillis
 
     fun parse(token: String): Claims {
         return Jwts
@@ -31,7 +32,7 @@ class JwtTokenComponent {
 
     fun newToken(userSeq: Long, now: Date): String {
         val claims = DefaultClaims()
-        claims.expiration = Date(now.time + oneHourInMillis)
+        claims.expiration = Date(now.time + validTokenMillis)
         claims.issuedAt = now
         claims["userSeq"] = userSeq
 
