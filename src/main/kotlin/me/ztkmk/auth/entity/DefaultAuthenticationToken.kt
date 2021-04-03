@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority
  * @create 2021-04-03 17:16
  */
 data class DefaultAuthenticationToken(
-    val seq: Long
-): UsernamePasswordAuthenticationToken(seq, null, DEFAULT_AUTHORITY_LIST) {
+    val userSeq: Long
+): UsernamePasswordAuthenticationToken(userSeq, null, DEFAULT_AUTHORITY_LIST) {
     companion object {
         val DEFAULT_AUTHORITY_LIST =  defaultAuthorityList()
 

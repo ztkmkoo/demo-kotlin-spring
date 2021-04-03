@@ -7,6 +7,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
+import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -16,9 +17,11 @@ import javax.servlet.http.HttpServletResponse
  * @create 2021-03-25 21:42
  */
 @Component
-class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent): OncePerRequestFilter() {
+class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent) : OncePerRequestFilter() {
 
-    companion object: CustomLog
+    companion object : CustomLog {
+        val PATH_AUTH_PATTERN = Regex("^\\/api\\/v1.0\\/auth(.*)")
+    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -26,26 +29,37 @@ class JwtRequestFilter(val jwtTokenComponent: JwtTokenComponent): OncePerRequest
         filterChain: FilterChain
     ) {
         val requestTokenHeader = request.getHeader("Authorization")
-        if(!StringUtils.isEmpty(requestTokenHeader) && requestTokenHeader.startsWith("Bearer")) {
+        if (!StringUtils.isEmpty(requestTokenHeader) && requestTokenHeader.startsWith("Bearer")) {
             val jwtToken = requestTokenHeader.substring(7)
 
             val claims = jwtTokenComponent.parse(jwtToken)
 
-            if(jwtTokenComponent.validToken(claims)) {
+            if (jwtTokenComponent.validToken(claims)) {
                 val seq = getLongValue(claims["userSeq"])
-                val authToken = DefaultAuthenticationToken(seq)
-                authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
-                SecurityContextHolder.getContext().authentication = authToken
-            } else{
+                if (seq > 0) {
+                    val authToken = DefaultAuthenticationToken(seq)
+                    authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
+                    SecurityContextHolder.getContext().authentication = authToken
+
+                    filterChain.doFilter(request, response)
+                } else {
+                    throw RuntimeException("Invalid user token")
+                }
+            } else {
                 logger.error("Token is expired: $jwtToken")
             }
         }
 
-        filterChain.doFilter(request, response)
+        val match = PATH_AUTH_PATTERN.matchEntire(request.requestURI)
+        if (Objects.nonNull(match)) {
+            filterChain.doFilter(request, response)
+        } else {
+            throw RuntimeException("Invalid user token. [URI: ${request.requestURI}]")
+        }
     }
 
     private fun getLongValue(any: Any?): Long {
-        return when(any) {
+        return when (any) {
             is Number -> any.toLong()
             else -> throw RuntimeException("not numeric!!!")
         }
