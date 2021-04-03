@@ -8,7 +8,7 @@ import java.util.*
  */
 data class MyDiaryInfo(
     val seq: Long,
-    val imageUrl: String,
+    val imageUrls: List<String>?,
     val authorSeq: Long,
     val authorName: String,
     val created: Date,
