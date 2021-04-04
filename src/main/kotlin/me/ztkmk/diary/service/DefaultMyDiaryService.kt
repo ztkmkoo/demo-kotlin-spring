@@ -8,6 +8,7 @@ import me.ztkmk.diary.model.DiaryPostTag
 import me.ztkmk.diary.repository.DiaryPostImageRepository
 import me.ztkmk.diary.repository.DiaryPostRepository
 import me.ztkmk.diary.repository.DiaryPostTagRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +29,8 @@ class DefaultMyDiaryService(
     val diaryPostRepository: DiaryPostRepository,
     val diaryPostTagRepository: DiaryPostTagRepository,
     val diaryPostImageRepository: DiaryPostImageRepository,
+    @Value(value = "\${diary.post.image.base-path}")
+    val diaryPostImageBasePath: String,
 ): MyDiaryService {
     companion object: CustomLog {
         val CONTENT_TYPE_IMAGE_PATTERN = Regex("img\\/.*")
@@ -55,10 +58,8 @@ class DefaultMyDiaryService(
             throw RuntimeException("It is not a image file")
         }
 
-
-        val imageBaseDirectory = "C:\\Data\\img"
         val directoryPath = createImageDirectoryPath(postSeq)
-        val directory = File(imageBaseDirectory, directoryPath)
+        val directory = File(diaryPostImageBasePath, directoryPath)
         directory.deleteRecursively()
         directory.mkdirs()
 
