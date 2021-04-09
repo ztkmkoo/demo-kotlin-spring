@@ -1,9 +1,7 @@
 package me.ztkmk.auth.controller
 
-import me.ztkmk.auth.entity.CreateUserTokenRequest
-import me.ztkmk.auth.entity.CreateUserTokenResponse
-import me.ztkmk.auth.entity.GetUserStatusResponse
-import me.ztkmk.auth.entity.PostUserCertificationNumberRequest
+import me.ztkmk.auth.component.JwtTokenComponent
+import me.ztkmk.auth.entity.*
 import me.ztkmk.auth.enumeration.AuthVerificationStatus
 import me.ztkmk.auth.service.AuthenticationService
 import me.ztkmk.common.api.ApiVersions
@@ -21,7 +19,10 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping(value = ["/auth"])
-class AuthenticationController(@Autowired val authenticationService: AuthenticationService) {
+class AuthenticationController(
+    @Autowired val authenticationService: AuthenticationService,
+    @Autowired val jwtTokenComponent: JwtTokenComponent
+) {
 
     companion object: CustomLog
 
@@ -69,5 +70,17 @@ class AuthenticationController(@Autowired val authenticationService: Authenticat
         return ResponseEntity
             .ok()
             .body(CreateUserTokenResponse(token = token))
+    }
+
+    @Version(value = [ApiVersions.V1_0])
+    @GetMapping(value = ["/user/token/{token}/expiry-date"])
+    fun getTokenExpiryDate(@PathVariable(required = true, value = "token") token: String): ResponseEntity<Any> {
+        val expiryDate = authenticationService.getUserTokenExpiryDate(token)
+        if (expiryDate != null) {
+            val refreshable = jwtTokenComponent.refreshableToken(expiryDate)
+            return ResponseEntity.ok(GetTokenExpiryDateResponse(expiryDate, refreshable))
+        }
+
+        return ResponseEntity.badRequest().build()
     }
 }

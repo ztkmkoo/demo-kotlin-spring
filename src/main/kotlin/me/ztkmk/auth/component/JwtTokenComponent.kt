@@ -15,8 +15,9 @@ import java.util.*
 class JwtTokenComponent {
     private final val key = "HELLO WORLD"
     private final val keyBytes = key.toByteArray(Charsets.UTF_8)
-    private final val oneHourInMillis = 60 * 60 * 1000
-    private final val validTokenMillis = 24 * oneHourInMillis
+    private final val oneHourInMillis: Long = 60 * 60 * 1000
+    private final val oneDayInMillis: Long = 24 * oneHourInMillis
+    private final val validTokenMillis: Long = 30 * oneDayInMillis
 
     fun parse(token: String): Claims {
         return Jwts
@@ -43,5 +44,10 @@ class JwtTokenComponent {
             .setClaims(claims)
             .signWith(SignatureAlgorithm.HS256, key.toByteArray(Charsets.UTF_8))
             .compact()
+    }
+
+    fun refreshableToken(expiryDate: Date): Boolean {
+        val lastValidDate = Date(Date().time + validTokenMillis)
+        return lastValidDate.before(expiryDate)
     }
 }

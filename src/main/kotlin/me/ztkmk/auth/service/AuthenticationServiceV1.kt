@@ -118,6 +118,13 @@ class AuthenticationServiceV1(
         return jwtTokenComponent.newToken(user!!.seq!!, now)
     }
 
+    override fun getUserTokenExpiryDate(token: String): Date? {
+        if(StringUtils.isEmpty(token)) return null
+
+        val claims = jwtTokenComponent.parse(token)
+        return claims.expiration
+    }
+
     private fun getDatetimeBeforeFiveMinutes(): Date {
         val cal = Calendar.getInstance()
         cal.time = Date()

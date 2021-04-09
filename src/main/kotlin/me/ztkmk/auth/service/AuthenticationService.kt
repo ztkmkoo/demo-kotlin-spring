@@ -3,6 +3,7 @@ package me.ztkmk.auth.service
 import me.ztkmk.auth.enumeration.AuthVerificationStatus
 import me.ztkmk.auth.enumeration.UserAuthenticationStatus
 import org.springframework.http.HttpStatus
+import java.util.*
 
 /**
  * @author Kebron ztkmkoo@gmail.com
@@ -17,4 +18,6 @@ interface AuthenticationService {
     fun verifyAuthNumber(cellphone: String, deviceId: String, authNumber: String): AuthVerificationStatus
 
     fun createJwtToken(cellphone: String, deviceId: String): String
+
+    fun getUserTokenExpiryDate(token: String): Date?
 }
