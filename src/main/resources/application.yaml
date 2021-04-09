@@ -5,7 +5,7 @@ spring:
   profiles:
     active: default
   datasource:
-    url: "jdbc:mysql://127.0.0.1:13306/test"
+    url: "jdbc:mysql://ec2-3-34-195-70.ap-northeast-2.compute.amazonaws.com:13306/test"
     driver-class-name: "com.mysql.cj.jdbc.Driver"
     username: "test"
     password: "test123"
@@ -36,7 +36,7 @@ server:
 spring:
   profiles: dev
   datasource:
-    url: "jdbc:mysql://127.0.0.1:3306/test"
+    url: "jdbc:mysql://ec2-3-34-195-70.ap-northeast-2.compute.amazonaws.com:3306/test"
 
 diary:
   post:
